@@ -156,20 +156,23 @@ static void typecheck_functions_should_check_type(void)
     cJSON item[1];
     invalid->type = cJSON_Invalid;
     invalid->type |= cJSON_StringIsConst;
-    item->type = cJSON_False;
+    item->type = cJSON_Bool;
     item->type |= cJSON_StringIsConst;
+    item->valueint = 0;
 
     TEST_ASSERT_FALSE(cJSON_IsInvalid(NULL));
     TEST_ASSERT_FALSE(cJSON_IsInvalid(item));
     TEST_ASSERT_TRUE(cJSON_IsInvalid(invalid));
 
-    item->type = cJSON_False | cJSON_StringIsConst;
+    item->type = cJSON_Bool | cJSON_StringIsConst;
+    item->valueint = 0;
     TEST_ASSERT_FALSE(cJSON_IsFalse(NULL));
     TEST_ASSERT_FALSE(cJSON_IsFalse(invalid));
     TEST_ASSERT_TRUE(cJSON_IsFalse(item));
     TEST_ASSERT_TRUE(cJSON_IsBool(item));
 
-    item->type = cJSON_True | cJSON_StringIsConst;
+    item->type = cJSON_Bool | cJSON_StringIsConst;
+    item->valueint = 1;
     TEST_ASSERT_FALSE(cJSON_IsTrue(NULL));
     TEST_ASSERT_FALSE(cJSON_IsTrue(invalid));
     TEST_ASSERT_TRUE(cJSON_IsTrue(item));
@@ -250,11 +253,11 @@ static void cjson_set_number_value_should_set_numbers(void)
     TEST_ASSERT_EQUAL_DOUBLE(-1.5, number->valuedouble);
 
     cJSON_SetNumberValue(number, 1 + (double)INT_MAX);
-    TEST_ASSERT_EQUAL(INT_MAX, number->valueint);
+    TEST_ASSERT_EQUAL(2147483648LL, number->valueint);
     TEST_ASSERT_EQUAL_DOUBLE(1 + (double)INT_MAX, number->valuedouble);
 
     cJSON_SetNumberValue(number, -1 + (double)INT_MIN);
-    TEST_ASSERT_EQUAL(INT_MIN, number->valueint);
+    TEST_ASSERT_EQUAL(-2147483649LL, number->valueint);
     TEST_ASSERT_EQUAL_DOUBLE(-1 + (double)INT_MIN, number->valuedouble);
 }
 
@@ -733,11 +736,11 @@ static void cjson_set_bool_value_must_not_break_objects(void)
 
     bobj = cJSON_CreateFalse();
     TEST_ASSERT_TRUE(cJSON_IsFalse(bobj));
-    TEST_ASSERT_TRUE((cJSON_SetBoolValue(bobj, 1) == cJSON_True));
+    TEST_ASSERT_TRUE((cJSON_SetBoolValue(bobj, 1) == 1));
     TEST_ASSERT_TRUE(cJSON_IsTrue(bobj));
     cJSON_SetBoolValue(bobj, 1);
     TEST_ASSERT_TRUE(cJSON_IsTrue(bobj));
-    TEST_ASSERT_TRUE((cJSON_SetBoolValue(bobj, 0) == cJSON_False));
+    TEST_ASSERT_TRUE((cJSON_SetBoolValue(bobj, 0) == 0));
     TEST_ASSERT_TRUE(cJSON_IsFalse(bobj));
     cJSON_SetBoolValue(bobj, 0);
     TEST_ASSERT_TRUE(cJSON_IsFalse(bobj));

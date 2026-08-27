@@ -79,7 +79,7 @@ static void parse_array_should_parse_arrays_with_one_element(void)
 
     assert_parse_array("[1]");
     assert_has_child(item);
-    assert_has_type(item->child, cJSON_Number);
+    assert_has_type(item->child, cJSON_Int);
     reset(item);
 
     assert_parse_array("[\"hello!\"]");
@@ -108,9 +108,9 @@ static void parse_array_should_parse_arrays_with_multiple_elements(void)
     TEST_ASSERT_NOT_NULL(item->child->next);
     TEST_ASSERT_NOT_NULL(item->child->next->next);
     TEST_ASSERT_NULL(item->child->next->next->next);
-    assert_has_type(item->child, cJSON_Number);
-    assert_has_type(item->child->next, cJSON_Number);
-    assert_has_type(item->child->next->next, cJSON_Number);
+    assert_has_type(item->child, cJSON_Int);
+    assert_has_type(item->child->next, cJSON_Int);
+    assert_has_type(item->child->next->next, cJSON_Int);
     reset(item);
 
     {
@@ -118,10 +118,10 @@ static void parse_array_should_parse_arrays_with_multiple_elements(void)
         cJSON *node = NULL;
         int expected_types[7] =
         {
-            cJSON_Number,
+            cJSON_Int,
             cJSON_NULL,
-            cJSON_True,
-            cJSON_False,
+            cJSON_Bool,
+            cJSON_Bool,
             cJSON_Array,
             cJSON_String,
             cJSON_Object

@@ -89,7 +89,8 @@ static void cjson_add_true_should_add_true(void)
     cJSON_AddTrueToObject(root, "true");
 
     TEST_ASSERT_NOT_NULL(true_item = cJSON_GetObjectItemCaseSensitive(root, "true"));
-    TEST_ASSERT_EQUAL_INT(true_item->type, cJSON_True);
+    TEST_ASSERT_EQUAL_INT(true_item->type, cJSON_Bool);
+    TEST_ASSERT_TRUE(cJSON_IsTrue(true_item));
 
     cJSON_Delete(root);
 }
@@ -169,7 +170,8 @@ static void cjson_add_false_should_add_false(void)
     cJSON_AddFalseToObject(root, "false");
 
     TEST_ASSERT_NOT_NULL(false_item = cJSON_GetObjectItemCaseSensitive(root, "false"));
-    TEST_ASSERT_EQUAL_INT(false_item->type, cJSON_False);
+    TEST_ASSERT_EQUAL_INT(false_item->type, cJSON_Bool);
+    TEST_ASSERT_TRUE(cJSON_IsFalse(false_item));
 
     cJSON_Delete(root);
 }
@@ -206,12 +208,14 @@ static void cjson_add_bool_should_add_bool(void)
     /* true */
     cJSON_AddBoolToObject(root, "true", true);
     TEST_ASSERT_NOT_NULL(true_item = cJSON_GetObjectItemCaseSensitive(root, "true"));
-    TEST_ASSERT_EQUAL_INT(true_item->type, cJSON_True);
+    TEST_ASSERT_EQUAL_INT(true_item->type, cJSON_Bool);
+    TEST_ASSERT_TRUE(cJSON_IsTrue(true_item));
 
     /* false */
     cJSON_AddBoolToObject(root, "false", false);
     TEST_ASSERT_NOT_NULL(false_item = cJSON_GetObjectItemCaseSensitive(root, "false"));
-    TEST_ASSERT_EQUAL_INT(false_item->type, cJSON_False);
+    TEST_ASSERT_EQUAL_INT(false_item->type, cJSON_Bool);
+    TEST_ASSERT_TRUE(cJSON_IsFalse(false_item));
 
     cJSON_Delete(root);
 }

@@ -88,7 +88,7 @@ static void parse_object_should_parse_objects_with_one_element(void)
 {
 
     assert_parse_object("{\"one\":1}");
-    assert_is_child(item->child, "one", cJSON_Number);
+    assert_is_child(item->child, "one", cJSON_Int);
     reset(item);
 
     assert_parse_object("{\"hello\":\"world!\"}");
@@ -107,9 +107,9 @@ static void parse_object_should_parse_objects_with_one_element(void)
 static void parse_object_should_parse_objects_with_multiple_elements(void)
 {
     assert_parse_object("{\"one\":1\t,\t\"two\"\n:2, \"three\":3}");
-    assert_is_child(item->child, "one", cJSON_Number);
-    assert_is_child(item->child->next, "two", cJSON_Number);
-    assert_is_child(item->child->next->next, "three", cJSON_Number);
+    assert_is_child(item->child, "one", cJSON_Int);
+    assert_is_child(item->child->next, "two", cJSON_Int);
+    assert_is_child(item->child->next->next, "three", cJSON_Int);
     reset(item);
 
     {
@@ -117,10 +117,10 @@ static void parse_object_should_parse_objects_with_multiple_elements(void)
         cJSON *node = NULL;
         int expected_types[7] =
         {
-            cJSON_Number,
+            cJSON_Int,
             cJSON_NULL,
-            cJSON_True,
-            cJSON_False,
+            cJSON_Bool,
+            cJSON_Bool,
             cJSON_Array,
             cJSON_String,
             cJSON_Object
