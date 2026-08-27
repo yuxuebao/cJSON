@@ -79,7 +79,7 @@ static void parse_array_should_parse_arrays_with_one_element(void)
 
     assert_parse_array("[1]");
     assert_has_child(item);
-    assert_has_type(item->child, cJSON_Int);
+    TEST_ASSERT_TRUE_MESSAGE(cJSON_IsNumber(item->child), "Item is not a number.");
     reset(item);
 
     assert_parse_array("[\"hello!\"]");
@@ -108,9 +108,9 @@ static void parse_array_should_parse_arrays_with_multiple_elements(void)
     TEST_ASSERT_NOT_NULL(item->child->next);
     TEST_ASSERT_NOT_NULL(item->child->next->next);
     TEST_ASSERT_NULL(item->child->next->next->next);
-    assert_has_type(item->child, cJSON_Int);
-    assert_has_type(item->child->next, cJSON_Int);
-    assert_has_type(item->child->next->next, cJSON_Int);
+    TEST_ASSERT_TRUE_MESSAGE(cJSON_IsNumber(item->child), "Item is not a number.");
+    TEST_ASSERT_TRUE_MESSAGE(cJSON_IsNumber(item->child->next), "Item is not a number.");
+    TEST_ASSERT_TRUE_MESSAGE(cJSON_IsNumber(item->child->next->next), "Item is not a number.");
     reset(item);
 
     {

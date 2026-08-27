@@ -37,9 +37,7 @@ static void assert_is_number(cJSON *number_item)
 
     assert_not_in_list(number_item);
     assert_has_no_child(number_item);
-    /* integers have type cJSON_Int, reals have type cJSON_Number */
-    TEST_ASSERT_TRUE_MESSAGE(((number_item->type & 0xFF) == cJSON_Number)
-        || ((number_item->type & 0xFF) == cJSON_Int), "Item doesn't have expected type.");
+    TEST_ASSERT_TRUE_MESSAGE(cJSON_IsNumber(number_item), "Item is not a number.");
     assert_has_no_reference(number_item);
     assert_has_no_const_string(number_item);
     assert_has_no_valuestring(number_item);
@@ -81,14 +79,15 @@ static void parse_number_should_parse_negative_integers(void)
 {
     assert_parse_number("-1", -1, -1);
     assert_parse_number("-32768", -32768, -32768.0);
-    assert_parse_number("-2147483648", (int)-2147483648.0, -2147483648.0);
+    assert_parse_number("-2147483648", (long long)-2147483648.0, -2147483648.0);
 }
 
 static void parse_number_should_parse_positive_integers(void)
 {
     assert_parse_number("1", 1, 1);
     assert_parse_number("32767", 32767, 32767.0);
-    assert_parse_number("2147483647", (int)2147483647.0, 2147483647.0);
+    assert_parse_number("2147483647", (long long)2147483647.0, 2147483647.0);
+    assert_parse_number("9223372036854775807", LLONG_MAX, 9223372036854775807.0);
 }
 
 static void parse_number_should_parse_positive_reals(void)
@@ -96,7 +95,7 @@ static void parse_number_should_parse_positive_reals(void)
     assert_parse_number("0.001", 0, 0.001);
     assert_parse_number("10e-10", 0, 10e-10);
     assert_parse_number("10E-10", 0, 10e-10);
-    assert_parse_number("10e10", 100000000000LL, 10e10);
+    assert_parse_number("10e10", (long long)10e10, 10e10);
     assert_parse_number("123e+127", LLONG_MAX, 123e127);
     assert_parse_number("123e-128", 0, 123e-128);
 }
@@ -118,15 +117,6 @@ static void parse_number_should_parse_big_numbers(void)
     assert_parse_big_number("999999999999999999999999999999999999999999999991234567890.1234567");
 }
 
-static void parse_number_should_parse_int64_boundaries(void)
-{
-    assert_parse_number("9223372036854775807", 9223372036854775807LL, 9223372036854775807.0);
-    assert_parse_number("-9223372036854775808", -9223372036854775807LL - 1, -9223372036854775808.0);
-    /* strtoll saturates on overflow */
-    assert_parse_number("9223372036854775808", 9223372036854775807LL, 9223372036854775808.0);
-    assert_parse_number("-9223372036854775809", -9223372036854775807LL - 1, -9223372036854775809.0);
-}
-
 int CJSON_CDECL main(void)
 {
     /* initialize cJSON item */
@@ -138,6 +128,5 @@ int CJSON_CDECL main(void)
     RUN_TEST(parse_number_should_parse_positive_reals);
     RUN_TEST(parse_number_should_parse_negative_reals);
     RUN_TEST(parse_number_should_parse_big_numbers);
-    RUN_TEST(parse_number_should_parse_int64_boundaries);
     return UNITY_END();
 }

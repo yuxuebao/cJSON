@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <limits.h>
 
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
@@ -252,13 +253,13 @@ static void cjson_set_number_value_should_set_numbers(void)
     TEST_ASSERT_EQUAL(-1, number->valueint);
     TEST_ASSERT_EQUAL_DOUBLE(-1.5, number->valuedouble);
 
-    cJSON_SetNumberValue(number, 1 + (double)INT_MAX);
-    TEST_ASSERT_EQUAL(2147483648LL, number->valueint);
-    TEST_ASSERT_EQUAL_DOUBLE(1 + (double)INT_MAX, number->valuedouble);
+    cJSON_SetNumberValue(number, 1 + (double)LLONG_MAX);
+    TEST_ASSERT_EQUAL_INT64(LLONG_MAX, number->valueint);
+    TEST_ASSERT_EQUAL_DOUBLE(1 + (double)LLONG_MAX, number->valuedouble);
 
-    cJSON_SetNumberValue(number, -1 + (double)INT_MIN);
-    TEST_ASSERT_EQUAL(-2147483649LL, number->valueint);
-    TEST_ASSERT_EQUAL_DOUBLE(-1 + (double)INT_MIN, number->valuedouble);
+    cJSON_SetNumberValue(number, -1 + (double)LLONG_MIN);
+    TEST_ASSERT_EQUAL_INT64(LLONG_MIN, number->valueint);
+    TEST_ASSERT_EQUAL_DOUBLE(-1 + (double)LLONG_MIN, number->valuedouble);
 }
 
 static void cjson_detach_item_via_pointer_should_detach_items(void)

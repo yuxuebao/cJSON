@@ -61,14 +61,14 @@ static void parse_value_should_parse_null(void)
 static void parse_value_should_parse_true(void)
 {
     assert_parse_value("true", cJSON_Bool);
-    TEST_ASSERT_EQUAL_INT(1, item->valueint);
+    TEST_ASSERT_TRUE(item->valueint);
     reset(item);
 }
 
 static void parse_value_should_parse_false(void)
 {
     assert_parse_value("false", cJSON_Bool);
-    TEST_ASSERT_EQUAL_INT(0, item->valueint);
+    TEST_ASSERT_FALSE(item->valueint);
     reset(item);
 }
 

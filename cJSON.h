@@ -86,15 +86,15 @@ then using the CJSON_API_VISIBILITY flag to "export" the same symbols the way CJ
 #include <stddef.h>
 
 /* cJSON Types: */
-#define cJSON_Invalid 		(0)
-#define cJSON_Bool  		(1 << 0)
-#define cJSON_Int   		(1 << 1)
-#define cJSON_NULL   		(1 << 2)
-#define cJSON_Number		(1 << 3)
-#define cJSON_String 		(1 << 4)
-#define cJSON_Array  		(1 << 5)
-#define cJSON_Object 		(1 << 6)
-#define cJSON_Raw    		(1 << 7) /* raw json */
+#define cJSON_Invalid (0)
+#define cJSON_Bool   (1 << 0)
+#define cJSON_Int    (1 << 1)
+#define cJSON_NULL   (1 << 2)
+#define cJSON_Number (1 << 3)
+#define cJSON_String (1 << 4)
+#define cJSON_Array  (1 << 5)
+#define cJSON_Object (1 << 6)
+#define cJSON_Raw    (1 << 7) /* raw json */
 
 #define cJSON_IsReference 256
 #define cJSON_StringIsConst 512
@@ -113,7 +113,7 @@ typedef struct cJSON
 
     /* The item's string, if type==cJSON_String  and type == cJSON_Raw */
     char *valuestring;
-    /* If value is not in [LLONG_MIN, LLONG_MAX], use cJSON_SetNumberValue instead */
+    /* writing to valueint is DEPRECATED, use cJSON_SetNumberValue instead */
     long long valueint;
     /* The item's number, if type==cJSON_Number */
     double valuedouble;
@@ -264,8 +264,8 @@ CJSON_PUBLIC(cJSON *) cJSON_Duplicate(const cJSON *item, cJSON_bool recurse);
 CJSON_PUBLIC(cJSON_bool) cJSON_Compare(const cJSON * const a, const cJSON * const b, const cJSON_bool case_sensitive);
 
 /* Minify a strings, remove blank characters(such as ' ', '\t', '\r', '\n') from strings.
- * The input pointer json cannot point to a read-only address area, such as a string constant,
- * but should point to a readable and writable adress area. */
+ * The input pointer json cannot point to a read-only address area, such as a string constant, 
+ * but should point to a readable and writable address area. */
 CJSON_PUBLIC(void) cJSON_Minify(char *json);
 
 /* Helper functions for creating and adding items to an object at the same time.
@@ -282,18 +282,17 @@ CJSON_PUBLIC(cJSON*) cJSON_AddObjectToObject(cJSON * const object, const char * 
 CJSON_PUBLIC(cJSON*) cJSON_AddArrayToObject(cJSON * const object, const char * const name);
 
 /* When assigning an integer value, it needs to be propagated to valuedouble too. */
-#define cJSON_SetIntValue(object, number) ((object) ? (object)->valuedouble =  (object)->valueint = (number): (number))
+#define cJSON_SetIntValue(object, number) ((object) ? (object)->valueint = (object)->valuedouble = (number) : (number))
 /* helper for the cJSON_SetNumberValue macro */
 CJSON_PUBLIC(double) cJSON_SetNumberHelper(cJSON *object, double number);
 #define cJSON_SetNumberValue(object, number) ((object != NULL) ? cJSON_SetNumberHelper(object, (double)number) : (number))
 /* Change the valuestring of a cJSON_String object, only takes effect when type of object is cJSON_String */
 CJSON_PUBLIC(char*) cJSON_SetValuestring(cJSON *object, const char *valuestring);
 
-/* If the object is not a boolean type this does nothing and returns cJSON_Invalid
- * else it sets the new boolean value into valueint and returns it (1 for true, 0 for false) */
+/* If the object is not a boolean type this does nothing and returns cJSON_Invalid else it returns the new type*/
 #define cJSON_SetBoolValue(object, boolValue) ( \
-    (object != NULL && ((object)->type & cJSON_Bool)) ? \
-    ((object)->valueint = (boolValue)) : \
+    (object != NULL && ((object)->type & 0xFF) == cJSON_Bool) ? \
+    (object)->valueint = (boolValue) : \
     cJSON_Invalid\
 )
 
