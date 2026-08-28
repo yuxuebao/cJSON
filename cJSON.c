@@ -417,7 +417,7 @@ loop_end:
     else
     {
         /* use saturation in case of overflow */
-        if (number >= LLONG_MAX)
+        if (number >= (double)LLONG_MAX)
         {
             item->valueint = LLONG_MAX;
         }
@@ -445,7 +445,7 @@ CJSON_PUBLIC(double) cJSON_SetNumberHelper(cJSON *object, double number)
         return (double)NAN;
     }
 
-    if (number >= LLONG_MAX)
+    if (number >= (double)LLONG_MAX)
     {
         object->valueint = LLONG_MAX;
     }
@@ -2573,7 +2573,7 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateNumber(double num)
         item->valuedouble = num;
 
         /* use saturation in case of overflow */
-        if (num >= LLONG_MAX)
+        if (num >= (double)LLONG_MAX)
         {
             item->valueint = LLONG_MAX;
         }
